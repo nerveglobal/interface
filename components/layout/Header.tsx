@@ -117,9 +117,9 @@ export default function Header() {
 							{/* <Link href="/player">Player</Link>
 							<Link href="/dare">Dare</Link> */}
 						</Box>
-						<Tooltip title="Theme">
+						{/* <Tooltip title="Theme">
 							<Button onClick={() => setLight((prev) => !prev)}>Toggle Theme</Button>
-						</Tooltip>
+						</Tooltip> */}
 						<Tooltip title="Theme">
 							<Button onClick={() => setLight((prev) => !prev)}>Chain</Button>
 						</Tooltip>

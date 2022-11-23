@@ -71,7 +71,7 @@ export default function BlockNumber() {
 				}
 			};
 			getGwei();
-		}, 5000);
+		}, 50000);
 	}, []);
 
 	return (

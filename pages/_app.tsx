@@ -27,16 +27,16 @@ function Child() {
 	return null;
 }
 
-function getLibrary(provider: any): Web3Provider {
-	const library = new Web3Provider(provider);
-	library.pollingInterval = 12000;
-	return library;
-}
+// function getProvider(provider: any): Web3Provider {
+// 	const library = new Web3Provider(provider);
+// 	library.pollingInterval = 12000;
+// 	return library;
+// }
 
 export default function MyApp({ Component, pageProps }) {
 	return (
 		<>
-			<Web3ReactProvider connectors={connectors} getLibrary={getLibrary}>
+			<Web3ReactProvider connectors={connectors}>
 				<Child />
 				<Layout>
 					<SnackbarProvider maxSnack={3}>

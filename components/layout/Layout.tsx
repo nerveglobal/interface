@@ -6,7 +6,7 @@ import Header from './Header';
 import { CssBaseline } from '@mui/material/';
 import Button from '@mui/material/Button';
 import { deepmerge } from '@mui/utils';
-import { light } from './Header';
+// import { light } from './Header';
 import { themeDark, themeLight } from './styles';
 
 type Props = {
@@ -16,7 +16,7 @@ type Props = {
 
 const Layout = ({ children, title = 'This is the default title' }: Props) => {
 	return (
-		<ThemeProvider theme={light ? themeLight : themeDark}>
+		<ThemeProvider theme={themeDark}>
 			<CssBaseline />
 			<Header />
 			<main>{children}</main>

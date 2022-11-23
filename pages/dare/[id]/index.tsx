@@ -21,7 +21,9 @@ import Youtube from '../../../images/youtube.inline.svg';
 import Button from '@mui/material/Button';
 import { useSnackbar } from 'notistack';
 
+import { red } from '@mui/material/colors';
 import Skeleton from '@mui/material/Skeleton';
+import { Accounts } from '../../../components/Accounts';
 
 const StyledInstagram = styled(Instagram)`
 	path {
@@ -130,6 +132,17 @@ const GrantsCard = styled(StyledCard)`
 	}
 `;
 
+const AnalyticsCard = styled(StyledCard)`
+	width: 400px;
+	height: 200px;
+	margin: 0 auto 0 auto;
+
+	@media (max-width: 960px) {
+		width: 100%;
+		margin: 0 auto 0 auto;
+	}
+`;
+
 const Positive = styled.div`
 	color: green;
 	align-items: left;
@@ -159,7 +172,7 @@ const StyledItemRowSocials = styled.nav`
 	margin: -0.5rem auto 0.75rem auto;
 
 	p {
-		font-size: 12px;
+		font-size: 16px;
 		justify-content: space-between;
 	}
 
@@ -245,12 +258,21 @@ const StyledItemRowIntern = styled.nav`
 	margin: 0 auto 0 auto;
 
 	p {
-		font-size: 12px;
+		font-size: 16px;
 		justify-content: space-between;
 	}
 
 	a {
 		font-size: 16px;
+	}
+
+	negative {
+		color: red;
+	}
+
+	positive {
+		font-size: 16px;
+		color: green;
 	}
 
 	@media (max-width: 960px) {
@@ -279,11 +301,16 @@ const StyledItemRow = styled.nav`
 	flex-direction: row;
 	margin: 0 auto 0 auto;
 
+	& > * {
+		margin-right: 10px;
+	}
+
 	@media (max-width: 960px) {
-		flex-direction: column;
+		flex-direction: column-reverse;
+
 		& > * {
-			margin-top: 1px;
-			margin-bottom: 1px;
+			margin-right: 0;
+			margin-top: 10px;
 		}
 	}
 `;
@@ -304,75 +331,71 @@ const StyledSection = styled.section`
 	}
 `;
 
-// TODO -> Countdown Shit
+export default function DarePage() {
+	// Get Task ID
+	const path = (global.window && window.location.pathname)?.toString() || '';
+	const dareNumber = path.split('/').pop();
+	const Id = '0x'.concat(dareNumber);
 
-// Account Address
-// const account = useWeb3React();
-
-// Get Task ID
-const path = (global.window && window.location.pathname)?.toString() || '';
-const dareNumber = path.split('/').pop();
-const Id = '0x'.concat(dareNumber);
-
-// Query The Graph -> Dares
-function useTAD() {
+	// Query The Graph -> Dares
 	const [tad, setTAD] = useState<any[]>([]);
-
 	useEffect(() => {
-		fetch('https://api.thegraph.com/subgraphs/name/nerveglobal/nerveglobal', {
-			method: 'POST',
-			headers: { 'Content-Type': 'application/json' },
-			body: JSON.stringify({ query: QueryForDare }),
-		})
-			.then((response) => response.json())
-			.then((data) => setTAD(data.data.tasks));
+		setInterval(() => {
+			fetch('https://api.thegraph.com/subgraphs/name/nerveglobal/nerveglobal', {
+				method: 'POST',
+				headers: { 'Content-Type': 'application/json' },
+				body: JSON.stringify({ query: QueryForDare }),
+			})
+				.then((response) => response.json())
+				.then((data) => setTAD(data.data.tasks));
+		}, 5000);
 	}, []);
 
-	return tad;
-}
-
-const QueryForDare = `
+	const QueryForDare = `
 {
   tasks(where: { id:"${Id}"}) 
   {
    description
+	recipientAddress
    recipientName
    endTask
    proofLink
    positiveVotes
    negativeVotes
    amount
+	entranceAmount
    participants
   }
 }
 `;
 
-// Query The Graph -> User -> Joined Dare || Voted Dare || Claimed Dare
-function useQueryForUser() {
+	// Query The Graph -> User -> Joined Dare || Voted Dare || Claimed Dare
 	const [queryForUser, setQueryForUser] = useState<any[]>([]);
 	useEffect(() => {
-		fetch('https://api.thegraph.com/subgraphs/name/nerveglobal/nerveglobal', {
-			method: 'POST',
-			headers: { 'Content-Type': 'application/json' },
-			body: JSON.stringify({ query: QueryForUser }),
-		}).then((response) => {
-			if (response.ok) {
-				response
-					.json()
+		setInterval(() => {
+			fetch('https://api.thegraph.com/subgraphs/name/nerveglobal/nerveglobal', {
+				method: 'POST',
+				headers: { 'Content-Type': 'application/json' },
+				body: JSON.stringify({ query: QueryForUser }),
+			}).then((response) => {
+				if (response.ok) {
+					response
+						.json()
 
-					.then((data) => setQueryForUser(data.data.userTasks));
-			}
-			throw console.log('Array is Empty');
-		});
+						.then((data) => setQueryForUser(data.data.userTasks));
+				}
+				throw console.log('Array is Empty');
+			});
+		}, 5000);
 	}, []);
 
-	return queryForUser;
-}
-
-// TODO -> Get ${account} as userAddress
-const QueryForUser = `
+	const { account, provider, isActive } = useWeb3React();
+	const acc = account?.toLowerCase();
+	console.log('Account to lower case', acc); // 0x52b28292846c59da23114496d6e6bfc875f54ff5
+	// TODO -> Get ${account} as userAddress
+	const QueryForUser = `
 {
-	userTasks(where: { id:"0x52b28292846c59da23114496d6e6bfc875f54ff5-${Id}"}) {
+	userTasks(where: { id:"${acc}-${Id}"}) {
 	  userStake
 	  voted
 	  vote
@@ -382,10 +405,8 @@ const QueryForUser = `
 	}
 `;
 
-export default function DarePage() {
-	const { account, provider, isActive } = useWeb3React();
-	const tad = useTAD();
-	const queryForUser = useQueryForUser();
+	console.log('ARRAY???', tad);
+	console.log('LOST???', queryForUser);
 	const matic = Number(usePrice());
 
 	// Merge The Graph Queries
@@ -395,7 +416,7 @@ export default function DarePage() {
 	}
 
 	// User joined?
-	var joined = queryForUser.length === 0 ? false : true;
+	let joined = queryForUser.length === 0 ? false : true;
 
 	//Claim Function
 	const [pendingTx, setPendingTx] = useState(false);
@@ -430,22 +451,14 @@ export default function DarePage() {
 	const [hours, setHours] = useState(0);
 	const [minutes, setMinutes] = useState(0);
 	const [seconds, setSeconds] = useState(0);
-	const [endTask, setEndTask] = useState(0);
-
-	{
-		merged.map((merged) => {
-			setEndTask(Math.floor(merged.endTask * 1000));
-		});
-		console.log('TIMESTAMP', endTask);
-	}
-
-	// TIMESTAMP 1669138345000
 
 	useEffect(() => {
+		const timestamp = merged['endTask'];
+
 		const interval = setInterval(() => {
 			const now = new Date().getTime();
-			const difference = endTask - now;
-			console.log('ENDTASK', endTask);
+			const difference = Math.floor(1669138345 * 1000) - now;
+			console.log('ENDTASK', timestamp);
 
 			// ENDTASK 0
 
@@ -475,11 +488,33 @@ export default function DarePage() {
 				{merged.map((merged) => (
 					<li style={{ listStyle: 'none' }} key={merged.participants}>
 						<StyledItemRow>
+							<AnalyticsCard>
+								<StyledItemRowIntern>
+									<p>Positive Votes</p>
+									{merged.positiveVotes}
+								</StyledItemRowIntern>
+								<StyledItemRowIntern>
+									<p>Negative Votes</p>
+									<p>{merged.negativeVotes}</p>
+								</StyledItemRowIntern>
+							</AnalyticsCard>
+
 							<GrantsCard>
 								<StyledItemRowSocials style={{ fontSize: '16px' }}>
-									<a key={merged.recipientName} target="_blank" rel="noreferrer" href={'https://app.nerveglobal.com/#' + merged.recipientName}>
-										{merged.recipientName}↗
-									</a>
+									{merged.recipientName.length > 0 ? (
+										<a key={merged.recipientName} target="_blank" rel="noreferrer" href={'https://app.nerveglobal.com/#' + merged.recipientName}>
+											{merged.recipientName}↗
+										</a>
+									) : (
+										<a
+											key={merged.recipientAddress}
+											target="_blank"
+											rel="noreferrer"
+											href={'https://app.nerveglobal.com/#' + merged.recipientAddress}
+										>
+											{merged.recipientAddress.substring(0, 6)}...{merged.recipientAddress.substring(merged.recipientAddress.length - 4)}
+										</a>
+									)}
 									<a target="_blank" rel="noreferrer" href={merged.proofLink}>
 										{merged.proofLink.includes('instagram') ? <StyledInstagram /> : ''}
 									</a>
@@ -503,7 +538,8 @@ export default function DarePage() {
 
 								<StyledItemRowDescription>{merged.description}</StyledItemRowDescription>
 
-								<StyledItemRowIntern style={{ marginBottom: '-0.25rem' }}>
+								<StyledItemRowIntern>
+									<p>Time</p>
 									{dareTimer ? (
 										<a>Time's over</a>
 									) : (
@@ -524,26 +560,30 @@ export default function DarePage() {
 											</div>
 										</div>
 									)}
-									{merged.positiveVotes - merged.negativeVotes > 0 ? (
-										<Positive>({merged.positiveVotes - merged.negativeVotes})</Positive>
-									) : (
-										<Negative>({merged.positiveVotes - merged.negativeVotes})</Negative>
-									)}
-									({merged.participants}) ${((merged.amount / 1e18) * matic).toFixed(2)}
+								</StyledItemRowIntern>
+								<StyledItemRowIntern>
+									<p>Participants</p>
+									{merged.participants}
+								</StyledItemRowIntern>
+								<StyledItemRowIntern>
+									<p>Entry Amount</p>${((merged.entranceAmount / 1e18) * matic).toFixed(2)}
+								</StyledItemRowIntern>
+								<StyledItemRowIntern>
+									<p>Total Amount</p>${((merged.amount / 1e18) * matic).toFixed(2)}
 								</StyledItemRowIntern>
 
-								<StyledItemRowIntern>
-									<p>Time & Votes</p>
-									<p>Participants & Value</p>
-								</StyledItemRowIntern>
 								{account ? (
-									joined == false ? (
+									joined === false ? (
 										<Join />
-									) : merged.voted == false ? (
+									) : merged.voted === false ? (
 										<Vote />
-									) : (
+									) : dareTimer && merged.positiveVotes - merged.negativeVotes < 0 ? (
 										<Button fullWidth={true} onClick={claimFunction}>
 											Claim
+										</Button>
+									) : (
+										<Button fullWidth={true} color="primary" disabled={true}>
+											Wait for vote
 										</Button>
 									)
 								) : (

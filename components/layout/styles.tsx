@@ -3,6 +3,28 @@ import localFont from '@next/font/local';
 
 const TrueLies = localFont({ src: './fonts/TrueLies.ttf' });
 
+const colors = {
+	primary: '#00adb5',
+	secondary: '#95defb',
+	success: '#4CAF50',
+	info: '#eb6133',
+	danger: '#FF5722',
+	warning: '#FFC107',
+	dark: '#0e1b20',
+	light: '#aaa',
+	muted: '#abafb3',
+	border: '#DDDFE1',
+	inverse: '#2F3D4A',
+	shaft: '#333',
+	dove_gray: '#d5d5d5',
+	body_bg: '#f3f6f9',
+	///////////////
+	// Solid Color
+	///////////////
+	white: '#fff',
+	black: '#000',
+};
+
 export const themeLight = createTheme({
 	typography: {
 		fontFamily: 'TrueLies',
@@ -27,9 +49,9 @@ export const themeLight = createTheme({
 });
 
 export const themeDark = createTheme({
-	typography: {
-		fontFamily: 'TrueLies',
-	},
+	// typography: {
+	// 	fontFamily: 'Roboto',
+	// },
 	components: {
 		MuiCssBaseline: {
 			styleOverrides: {
@@ -50,6 +72,9 @@ export const themeDark = createTheme({
 			// 	`,
 		},
 		MuiButton: {
+			defaultProps: {
+				disableRipple: true,
+			},
 			styleOverrides: {
 				// Name of the slot
 				root: {
@@ -65,6 +90,9 @@ export const themeDark = createTheme({
 		},
 		secondary: {
 			main: '#f50057',
+		},
+		info: {
+			main: colors.info,
 		},
 		background: {
 			default: `#000014`,

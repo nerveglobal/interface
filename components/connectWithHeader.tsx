@@ -10,9 +10,8 @@ import * as React from 'react';
 import { hooks, metaMask } from '../connectors/metaMask';
 import MetaMask from './connectorButtons/MetaMaskConnect';
 import Identicon from './Identicon';
+import AccountModal from './modal/Account';
 import Connect from './modal/Connect';
-
-const { useAccounts, useChainId, useIsActivating, useIsActive } = hooks;
 
 const style = {
 	position: 'absolute' as 'absolute',
@@ -26,40 +25,10 @@ const style = {
 	p: 4,
 };
 
-function ChainSelect() {
-	const chainId = useChainId();
-
-	return (
-		<>
-			<span>Chain: {chainId}</span>
-		</>
-	);
-}
-
-function Account() {
-	const { account } = useWeb3React();
-	const chainId = useChainId();
-
-	return (
-		<>
-			<span>
-				<Identicon />
-				{account === null ? '-' : account ? `${account.substring(0, 6)}...${account.substring(account.length - 4)}` : ''}
-			</span>
-		</>
-	);
-}
-
 function ConnectHeader() {
-	const accounts = useWeb3React();
+	const { account } = useWeb3React();
 
-	return (
-		<div>
-			{!accounts && <Connect />}
-			<Account />
-			<Connect />
-		</div>
-	);
+	return <>{account ? <AccountModal /> : <Connect />}</>;
 }
 
 export default ConnectHeader;
