@@ -1,8 +1,6 @@
 import styled from '@emotion/styled';
 import { BigNumber, ethers } from 'ethers';
-import Link from 'next/link';
-import { useRouter } from 'next/router';
-import { Fragment, useCallback, useEffect, useState } from 'react';
+import { Fragment, useEffect, useRef, useState } from 'react';
 
 import Join from '../../../components/modal/Join';
 import Vote from '../../../components/modal/Vote';
@@ -11,7 +9,6 @@ import { useWeb3React } from '@web3-react/core';
 import NerveGlobalABI from '../../../abi/NerveGlobal.json';
 import Connect from '../../../components/modal/Connect';
 
-import { Provider } from '@ethersproject/providers';
 import Instagram from '../../../images/instagram.inline.svg';
 import TikTok from '../../../images/tiktok.inline.svg';
 import Twitch from '../../../images/twitch.inline.svg';
@@ -21,9 +18,12 @@ import Youtube from '../../../images/youtube.inline.svg';
 import Button from '@mui/material/Button';
 import { useSnackbar } from 'notistack';
 
-import { red } from '@mui/material/colors';
-import Skeleton from '@mui/material/Skeleton';
-import { Accounts } from '../../../components/Accounts';
+import { LinearProgress } from '@mui/material';
+import Divider from '@mui/material/Divider';
+
+import Box from '@mui/material/Box';
+import Typography from '@mui/material/Typography';
+import { themeDark } from '../../../components/layout/styles';
 
 const StyledInstagram = styled(Instagram)`
 	path {
@@ -315,6 +315,29 @@ const StyledItemRow = styled.nav`
 	}
 `;
 
+const SmallStyledItemRow = styled.nav`
+	display: flex;
+	flex-direction: column;
+	margin: 0 20px 0 auto;
+
+	& > * {
+		margin: 0 auto 0 auto;
+	}
+
+	& > *:not(:first-of-type) {
+		margin: 20px 20px 0 auto;
+	}
+
+	@media (max-width: 960px) {
+		flex-direction: column-reverse;
+
+		& > * {
+			margin-right: 0;
+			margin-top: 10px;
+		}
+	}
+`;
+
 const StyledSection = styled.section`
 	display: flex;
 	align-items: center;
@@ -488,16 +511,29 @@ export default function DarePage() {
 				{merged.map((merged) => (
 					<li style={{ listStyle: 'none' }} key={merged.participants}>
 						<StyledItemRow>
-							<AnalyticsCard>
-								<StyledItemRowIntern>
-									<p>Positive Votes</p>
-									{merged.positiveVotes}
-								</StyledItemRowIntern>
-								<StyledItemRowIntern>
-									<p>Negative Votes</p>
-									<p>{merged.negativeVotes}</p>
-								</StyledItemRowIntern>
-							</AnalyticsCard>
+							<SmallStyledItemRow>
+								<AnalyticsCard>
+									<StyledItemRowIntern>
+										<p>Total Votes</p>
+										<p>{Number(merged.positiveVotes) + Number(merged.negativeVotes)}</p>
+									</StyledItemRowIntern>
+									<Divider variant="fullWidth" color={'#fff'} />
+
+									<StyledItemRowIntern>
+										<p>Positive Votes</p>
+										<p>{merged.positiveVotes}</p>
+									</StyledItemRowIntern>
+									<StyledItemRowIntern>
+										<p>Negative Votes</p>
+										<p>{merged.negativeVotes}</p>
+									</StyledItemRowIntern>
+								</AnalyticsCard>
+
+								{/* <AnalyticsCard>
+									<StyledItemRowIntern>
+									</StyledItemRowIntern>
+								</AnalyticsCard> */}
+							</SmallStyledItemRow>
 
 							<GrantsCard>
 								<StyledItemRowSocials style={{ fontSize: '16px' }}>
@@ -515,61 +551,72 @@ export default function DarePage() {
 											{merged.recipientAddress.substring(0, 6)}...{merged.recipientAddress.substring(merged.recipientAddress.length - 4)}
 										</a>
 									)}
-									<a target="_blank" rel="noreferrer" href={merged.proofLink}>
-										{merged.proofLink.includes('instagram') ? <StyledInstagram /> : ''}
-									</a>
-
-									<a target="_blank" rel="noreferrer" href={merged.proofLink}>
-										{merged.proofLink.includes('twitter') ? <StyledTwitter /> : ''}
-									</a>
-
-									<a target="_blank" rel="noreferrer" href={merged.proofLink}>
-										{merged.proofLink.includes('tiktok') ? <StyledTikTok /> : ''}
-									</a>
-
-									<a target="_blank" rel="noreferrer" href={merged.proofLink}>
-										{merged.proofLink.includes('youtube') ? <StyledYoutube /> : ''}
-									</a>
-
-									<a target="_blank" rel="noreferrer" href={merged.proofLink}>
-										{merged.proofLink.includes('twitch') ? <StyledTwitch /> : ''}
-									</a>
 								</StyledItemRowSocials>
 
 								<StyledItemRowDescription>{merged.description}</StyledItemRowDescription>
 
 								<StyledItemRowIntern>
+									<p>Proof</p>
+									{merged.proofLink.length === 0 ? (
+										<p>Outstanding</p>
+									) : merged.proofLink.includes('instagram') ? (
+										<a target="_blank" rel="noreferrer" href={merged.proofLink}>
+											<StyledInstagram />
+										</a>
+									) : merged.proofLink.includes('twitter') ? (
+										<a target="_blank" rel="noreferrer" href={merged.proofLink}>
+											<StyledTwitter />
+										</a>
+									) : merged.proofLink.includes('tiktok') ? (
+										<a target="_blank" rel="noreferrer" href={merged.proofLink}>
+											<StyledTikTok />
+										</a>
+									) : merged.proofLink.includes('youtube') ? (
+										<a target="_blank" rel="noreferrer" href={merged.proofLink}>
+											<StyledYoutube />
+										</a>
+									) : (
+										<a target="_blank" rel="noreferrer" href={merged.proofLink}>
+											<StyledTwitch />
+										</a>
+									)}
+								</StyledItemRowIntern>
+								<StyledItemRowIntern>
 									<p>Time</p>
 									{dareTimer ? (
-										<a>Time's over</a>
+										<p>Time's over</p>
 									) : (
-										<div className="timer-wrapper">
-											<div className="timer-inner">
-												<a className="timer-segment">
-													<span className="time">{days}:</span>
-												</a>
-												<a className="timer-segment">
-													<span className="time">{hours}:</span>
-												</a>
-												<a className="timer-segment">
-													<span className="time">{minutes}:</span>
-												</a>
-												<a className="timer-segment">
-													<span className="time">{seconds}</span>
-												</a>
+										<p>
+											<div className="timer-wrapper">
+												<div className="timer-inner">
+													<a className="timer-segment">
+														<span className="time">{days}:</span>
+													</a>
+													<a className="timer-segment">
+														<span className="time">{hours}:</span>
+													</a>
+													<a className="timer-segment">
+														<span className="time">{minutes}:</span>
+													</a>
+													<a className="timer-segment">
+														<span className="time">{seconds}</span>
+													</a>
+												</div>
 											</div>
-										</div>
+										</p>
 									)}
 								</StyledItemRowIntern>
 								<StyledItemRowIntern>
 									<p>Participants</p>
-									{merged.participants}
+									<p>{merged.participants}</p>
 								</StyledItemRowIntern>
 								<StyledItemRowIntern>
-									<p>Entry Amount</p>${((merged.entranceAmount / 1e18) * matic).toFixed(2)}
+									<p>Entry Amount</p>
+									<p>${((merged.entranceAmount / 1e18) * matic).toFixed(2)}</p>
 								</StyledItemRowIntern>
 								<StyledItemRowIntern>
-									<p>Total Amount</p>${((merged.amount / 1e18) * matic).toFixed(2)}
+									<p>Total Amount</p>
+									<p>${((merged.amount / 1e18) * matic).toFixed(2)}</p>
 								</StyledItemRowIntern>
 
 								{account ? (

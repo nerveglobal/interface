@@ -4,7 +4,7 @@ import { GnosisSafe } from '@web3-react/gnosis-safe';
 import { MetaMask } from '@web3-react/metamask';
 import { Network } from '@web3-react/network';
 import { WalletConnect } from '@web3-react/walletconnect';
-import { ConnectWithSelect } from './ConnectWithSelect';
+import { ConnectOnly } from './ConnectOnly';
 
 interface Props {
 	connector: MetaMask | WalletConnect | CoinbaseWallet | Network | GnosisSafe;
@@ -20,17 +20,14 @@ export function Card({ connector, chainId, isActivating, isActive, error, setErr
 		<div
 			style={{
 				display: 'flex',
+				width: '100%',
 				flexDirection: 'column',
 				justifyContent: 'space-between',
-				width: '20rem',
 				padding: '1rem',
-				margin: '1rem',
 				overflow: 'auto',
-				border: '1px solid',
-				borderRadius: '1rem',
 			}}
 		>
-			<ConnectWithSelect connector={connector} chainId={chainId} isActivating={isActivating} isActive={isActive} error={error} setError={setError} />
+			<ConnectOnly connector={connector} chainId={chainId} isActivating={isActivating} isActive={isActive} error={error} setError={setError} />
 		</div>
 	);
 }

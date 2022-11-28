@@ -173,6 +173,10 @@ function AccountModal() {
 					</Typography>
 					<Divider variant="fullWidth" color={'#fff'} />
 					<StyledItemRowIntern>
+						<p>Disconnect</p>
+						<Button sx={{ my: 2, color: 'white', display: 'block' }}>Button</Button>
+					</StyledItemRowIntern>
+					<StyledItemRowIntern>
 						<p>Light Theme</p>
 						<Button sx={{ my: 2, color: 'white', display: 'block' }}>Button</Button>
 					</StyledItemRowIntern>
