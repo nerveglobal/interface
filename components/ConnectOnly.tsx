@@ -6,7 +6,7 @@ import { GnosisSafe } from '@web3-react/gnosis-safe'
 import type { MetaMask } from '@web3-react/metamask'
 import { Network } from '@web3-react/network'
 import { WalletConnect } from '@web3-react/walletconnect'
-import { useCallback, useState } from 'react'
+import { useCallback, useEffect, useMemo, useState } from 'react'
 import { getAddChainParameters } from '../chains'
 import { getLogo, getName } from '../utils'
 
@@ -45,12 +45,10 @@ export function ConnectOnly({
         .activate(desiredChainId === -1 ? undefined : getAddChainParameters(desiredChainId))
         .then(() => setError(undefined))
         .catch(setError)
-        // localStorage.setItem('useIsActive', true)
     }
     
   }, [connector, desiredChainId, setError])
 
-  console.log('ACTIVE???', isActive)
   if (error) {
     return (
       <div style={{ display: 'flex', flexDirection: 'column' }}>
@@ -107,7 +105,7 @@ export function ConnectOnly({
                 .catch(setError)}
         disabled={isActivating}
       >
-{getLogo(connector)}
+{/* {getLogo(connector)} */}
         {getName(connector)}
       </Button>
     </div>

@@ -1,4 +1,3 @@
-import { Web3Provider } from '@ethersproject/providers';
 import { CssBaseline } from '@mui/material/';
 import { CoinbaseWallet } from '@web3-react/coinbase-wallet';
 import { useWeb3React, Web3ReactHooks, Web3ReactProvider } from '@web3-react/core';
@@ -6,7 +5,7 @@ import { MetaMask } from '@web3-react/metamask';
 import { Network } from '@web3-react/network';
 import { WalletConnect } from '@web3-react/walletconnect';
 import { SnackbarProvider } from 'notistack';
-import React, { useEffect, useState } from 'react';
+import React, { useEffect } from 'react';
 import Layout from '../components/layout/Layout';
 import { coinbaseWallet, hooks as coinbaseWalletHooks } from '../connectors/coinbaseWallet';
 import { hooks as metaMaskHooks, metaMask } from '../connectors/metaMask';
@@ -27,13 +26,18 @@ function Child() {
 	return null;
 }
 
-// function getProvider(provider: any): Web3Provider {
-// 	const library = new Web3Provider(provider);
-// 	library.pollingInterval = 12000;
-// 	return library;
-// }
-
 export default function MyApp({ Component, pageProps }) {
+	useEffect(() => {
+		void metaMask.connectEagerly().catch(() => {
+			console.debug('Failed to connect eagerly to MetaMask');
+		});
+		void coinbaseWallet.connectEagerly().catch(() => {
+			console.debug('Failed to connect eagerly to Coinbase Wallet');
+		});
+		void walletConnect.connectEagerly().catch(() => {
+			console.debug('Failed to connect eagerly to WalletConnect');
+		});
+	}, []);
 	return (
 		<>
 			<Web3ReactProvider connectors={connectors}>

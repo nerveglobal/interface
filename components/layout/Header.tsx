@@ -15,8 +15,6 @@ import Link from 'next/link';
 import { useState } from 'react';
 import ConnectHeader from '../connectWithHeader';
 
-import ProviderExample from '../../components/ProviderExample';
-
 const pages = ['Products', 'Pricing', 'Blog'];
 const settings = ['Profile', 'Account', 'Dashboard', 'Logout'];
 
@@ -42,7 +40,6 @@ export default function Header() {
 
 	return (
 		<>
-			<ProviderExample />
 			<AppBar sx={{ background: 'transparent', boxShadow: 'none' }} position="static">
 				<Container maxWidth="xl">
 					<Toolbar disableGutters>

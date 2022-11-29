@@ -9,8 +9,6 @@ import { deepmerge } from '@mui/utils';
 // import { light } from './Header';
 import { themeDark, themeLight } from './styles';
 
-import ProviderExample from '../../components/ProviderExample';
-
 type Props = {
 	children?: ReactNode;
 	title?: string;
@@ -19,7 +17,6 @@ type Props = {
 const Layout = ({ children, title = 'This is the default title' }: Props) => {
 	return (
 		<>
-			<ProviderExample />
 			<ThemeProvider theme={themeDark}>
 				<CssBaseline />
 				<Header />

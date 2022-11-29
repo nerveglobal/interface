@@ -4,11 +4,10 @@ import { MetaMask } from '@web3-react/metamask'
 import { Network } from '@web3-react/network'
 import type { Connector } from '@web3-react/types'
 import { WalletConnect } from '@web3-react/walletconnect'
-import Image from 'next/image'
 
 import CoinbaseWalletLogo from './public/connectorLogos/CoinbaseWalletLogo.png'
-import MetaMaskLogo from './public/connectorLogos/MetaMaskLogo.png'
 import WalletConnectLogo from './public/connectorLogos/WalletConnectLogo.png'
+import MetaMaskLogo from './svg/MetaMaskLogo.svg'
 
 export function getName(connector: Connector) {
   if (connector instanceof MetaMask) return 'MetaMask'
