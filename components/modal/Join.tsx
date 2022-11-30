@@ -70,7 +70,6 @@ export default function FormDialog() {
 	};
 
 	const customValue = values.amount.toString();
-	console.log(customValue);
 	// TODO -> Get Minimum Stake + Individual input Stake from user
 	const val = ethers.utils.parseEther(customValue);
 

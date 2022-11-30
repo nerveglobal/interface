@@ -128,9 +128,7 @@ function useBalance() {
 				const balance = await (await provider.getBalance(account)).toString();
 				const etherBalance = ethers.utils.formatEther(balance).toString();
 				setBalance(etherBalance);
-			} catch (error) {
-				console.log('No Balance');
-			}
+			} catch (error) {}
 		};
 		getBalance();
 		// }, 1000);
@@ -145,7 +143,6 @@ function AccountModal() {
 	const handleClose = () => setOpen(false);
 	const matic = Number(usePrice());
 	const etherBalance = useBalance();
-	console.log('ETHERPRICE', matic);
 
 	return (
 		<div>

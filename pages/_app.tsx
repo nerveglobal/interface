@@ -21,8 +21,8 @@ const connectors: [MetaMask | WalletConnect | CoinbaseWallet | Network, Web3Reac
 ];
 
 function Child() {
-	const { connector, account, accounts } = useWeb3React();
-	console.log(`Priority Connector is: ${getName(connector)} and Account is ${account} or ${accounts}`);
+	const { connector, account } = useWeb3React();
+	console.log(`Priority Connector is: ${getName(connector)} and Account is ${account}`);
 	return null;
 }
 

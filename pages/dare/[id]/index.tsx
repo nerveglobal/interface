@@ -414,7 +414,6 @@ export default function DarePage() {
 
 	const { account, provider, isActive } = useWeb3React();
 	const acc = account?.toLowerCase();
-	console.log('Account to lower case', acc); // 0x52b28292846c59da23114496d6e6bfc875f54ff5
 	// TODO -> Get ${account} as userAddress
 	const QueryForUser = `
 {
@@ -428,8 +427,6 @@ export default function DarePage() {
 	}
 `;
 
-	console.log('ARRAY???', tad);
-	console.log('LOST???', queryForUser);
 	const matic = Number(usePrice());
 
 	// Merge The Graph Queries

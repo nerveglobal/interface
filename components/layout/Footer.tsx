@@ -40,7 +40,6 @@ export default function BlockNumber() {
 		pocket: '-',
 		ankr: '-',
 	});
-	console.log('CHAIN', chain);
 	const [blockNumber, setBlockNumber] = useState(0);
 	const [gasPrice, setGasPrice] = useState('0');
 
@@ -50,11 +49,8 @@ export default function BlockNumber() {
 			const getBlock = async () => {
 				try {
 					const blockNumber = await provider.getBlockNumber();
-					console.log('BLOCK', blockNumber);
 					setBlockNumber(blockNumber);
-				} catch (error) {
-					console.log('No Blocknumber');
-				}
+				} catch (error) {}
 			};
 			getBlock();
 
@@ -64,11 +60,8 @@ export default function BlockNumber() {
 					const GasPrice = await provider.getGasPrice();
 					const gweiPrice = ethers.utils.formatUnits(GasPrice, 'gwei');
 					const gwei = gweiPrice.split('.', 1).pop();
-					console.log('GWEI PRICE', gwei);
 					setGasPrice(gwei);
-				} catch (error) {
-					console.log('No Gas Price');
-				}
+				} catch (error) {}
 			};
 			getGwei();
 		}, 50000);
